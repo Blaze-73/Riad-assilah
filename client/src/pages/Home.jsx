@@ -37,10 +37,11 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([]);
 
   useEffect(() => {
-    api.get('/rooms').then(r => setRooms(r.data)).catch(() => {});
-    api.get('/gallery').then(r => setGallery(r.data)).catch(() => {});
-    api.get('/testimonials').then(r => setTestimonials(r.data)).catch(() => {});
-  }, []);
+    const lang = i18n.language?.startsWith('ar') ? 'ar' : i18n.language?.startsWith('fr') ? 'fr' : 'en';
+    api.get(`/rooms?lang=${lang}`).then(r => setRooms(r.data)).catch(() => {});
+    api.get(`/gallery?lang=${lang}`).then(r => setGallery(r.data)).catch(() => {});
+    api.get(`/testimonials?lang=${lang}`).then(r => setTestimonials(r.data)).catch(() => {});
+  }, [i18n.language]);
 
   const showRooms = rooms.length > 0;
   const showGallery = gallery.length > 0;

@@ -5,17 +5,18 @@ import RoomCard from '../components/RoomCard.jsx';
 import api from '../services/api.js';
 
 export default function Rooms() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    api.get('/rooms')
+    const lang = i18n.language?.startsWith('ar') ? 'ar' : i18n.language?.startsWith('fr') ? 'fr' : 'en';
+    api.get(`/rooms?lang=${lang}`)
       .then(res => setRooms(res.data))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [i18n.language]);
 
   return (
     <div className="pt-28 pb-24 px-4 max-w-7xl mx-auto">

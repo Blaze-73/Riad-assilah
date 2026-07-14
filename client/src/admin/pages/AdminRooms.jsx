@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import api from '../../services/api.js';
 import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 
-const emptyForm = { name: '', description: '', bedType: '', capacity: '', pricePerNight: '', amenities: '' };
+const emptyForm = { name: '', nameFr: '', nameAr: '', description: '', descriptionFr: '', descriptionAr: '', bedType: '', capacity: '', pricePerNight: '', amenities: '', amenitiesFr: '', amenitiesAr: '' };
 
 export default function AdminRooms() {
   const { t } = useTranslation();
@@ -36,6 +36,8 @@ export default function AdminRooms() {
     setForm({
       ...room,
       amenities: (room.amenities || []).join(', '),
+      amenitiesFr: (room.amenitiesFr || []).join(', '),
+      amenitiesAr: (room.amenitiesAr || []).join(', '),
       capacity: room.capacity || '',
       pricePerNight: room.pricePerNight || '',
     });
@@ -66,11 +68,17 @@ export default function AdminRooms() {
     e.preventDefault();
     const payload = {
       name: form.name,
+      nameFr: form.nameFr || undefined,
+      nameAr: form.nameAr || undefined,
       description: form.description,
+      descriptionFr: form.descriptionFr || undefined,
+      descriptionAr: form.descriptionAr || undefined,
       bedType: form.bedType,
       capacity: Number(form.capacity),
       pricePerNight: Number(form.pricePerNight),
       amenities: form.amenities.split(',').map(a => a.trim()).filter(Boolean),
+      amenitiesFr: form.amenitiesFr ? form.amenitiesFr.split(',').map(a => a.trim()).filter(Boolean) : undefined,
+      amenitiesAr: form.amenitiesAr ? form.amenitiesAr.split(',').map(a => a.trim()).filter(Boolean) : undefined,
       images: imageList
     };
     if (editing) {
@@ -138,13 +146,33 @@ export default function AdminRooms() {
           >
             <h2 className="font-serif text-xl text-ocean mb-6">{editing ? t('admin_rooms_edit') : t('admin_rooms_add')}</h2>
             <div className="space-y-4">
-              <div>
-                <label htmlFor="room-name" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Name</label>
-                <input id="room-name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-3">
+                  <label htmlFor="room-name" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Name (EN)</label>
+                  <input id="room-name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+                </div>
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Name (FR)</label>
+                  <input value={form.nameFr} onChange={e => setForm({...form, nameFr: e.target.value})} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+                </div>
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Name (AR)</label>
+                  <input value={form.nameAr} onChange={e => setForm({...form, nameAr: e.target.value})} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+                </div>
               </div>
               <div>
-                <label htmlFor="room-desc" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Description</label>
+                <label htmlFor="room-desc" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Description (EN)</label>
                 <textarea id="room-desc" value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Description (FR)</label>
+                  <textarea value={form.descriptionFr} onChange={e => setForm({...form, descriptionFr: e.target.value})} rows={3} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+                </div>
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Description (AR)</label>
+                  <textarea value={form.descriptionAr} onChange={e => setForm({...form, descriptionAr: e.target.value})} rows={3} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+                </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
@@ -161,8 +189,18 @@ export default function AdminRooms() {
                 </div>
               </div>
               <div>
-                <label htmlFor="room-amenities" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Amenities (comma separated)</label>
+                <label htmlFor="room-amenities" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Amenities (EN, comma separated)</label>
                 <input id="room-amenities" value={form.amenities} onChange={e => setForm({...form, amenities: e.target.value})} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Amenities (FR, comma separated)</label>
+                  <input value={form.amenitiesFr} onChange={e => setForm({...form, amenitiesFr: e.target.value})} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+                </div>
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Amenities (AR, comma separated)</label>
+                  <input value={form.amenitiesAr} onChange={e => setForm({...form, amenitiesAr: e.target.value})} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+                </div>
               </div>
               <div>
                 <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Images</label>

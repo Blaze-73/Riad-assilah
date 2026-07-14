@@ -8,7 +8,7 @@ import api from '../services/api.js';
 const masonryHeights = [280, 340, 260, 320, 300, 260, 340, 280, 300];
 
 export default function Gallery() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -16,11 +16,12 @@ export default function Gallery() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    api.get('/gallery')
+    const lang = i18n.language?.startsWith('ar') ? 'ar' : i18n.language?.startsWith('fr') ? 'fr' : 'en';
+    api.get(`/gallery?lang=${lang}`)
       .then(res => setImages(res.data.map(i => ({ src: i.url, caption: i.caption, _id: i._id }))))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [i18n.language]);
 
   const openLightbox = useCallback((i) => {
     setIndex(i);

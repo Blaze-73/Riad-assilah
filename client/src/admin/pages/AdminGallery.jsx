@@ -12,6 +12,8 @@ export default function AdminGallery() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [showUpload, setShowUpload] = useState(false);
   const [caption, setCaption] = useState('');
+  const [captionFr, setCaptionFr] = useState('');
+  const [captionAr, setCaptionAr] = useState('');
   const [file, setFile] = useState(null);
 
   const headers = { Authorization: `Bearer ${token}` };
@@ -30,10 +32,14 @@ export default function AdminGallery() {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('caption', caption);
+    formData.append('captionFr', captionFr);
+    formData.append('captionAr', captionAr);
     try {
       await api.post('/gallery/upload', formData, { headers });
       setShowUpload(false);
       setCaption('');
+      setCaptionFr('');
+      setCaptionAr('');
       setFile(null);
       fetchImages();
     } catch {
@@ -82,7 +88,7 @@ export default function AdminGallery() {
               </div>
             )}
             <div className="mb-4">
-              <label htmlFor="gallery-caption" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Caption</label>
+              <label htmlFor="gallery-caption" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Caption (EN)</label>
               <input
                 id="gallery-caption"
                 value={caption}
@@ -91,11 +97,21 @@ export default function AdminGallery() {
                 className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30"
               />
             </div>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Caption (FR)</label>
+                <input value={captionFr} onChange={e => setCaptionFr(e.target.value)} placeholder="Ex: Patio intérieur" className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+              </div>
+              <div>
+                <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Caption (AR)</label>
+                <input value={captionAr} onChange={e => setCaptionAr(e.target.value)} placeholder="مثال: الفناء الداخلي" className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30" />
+              </div>
+            </div>
             <div className="flex gap-3">
               <button onClick={handleUpload} disabled={uploading} className="px-5 py-2.5 bg-ocean text-white rounded-xl text-sm font-medium hover:bg-ocean/90 transition-colors disabled:opacity-50">
                 {uploading ? 'Upload...' : 'Upload'}
               </button>
-              <button onClick={() => { setShowUpload(false); setFile(null); setCaption(''); }} className="px-5 py-2.5 bg-gray-100 text-ocean/60 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors">
+              <button onClick={() => { setShowUpload(false); setFile(null); setCaption(''); setCaptionFr(''); setCaptionAr(''); }} className="px-5 py-2.5 bg-gray-100 text-ocean/60 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors">
                 Cancel
               </button>
             </div>

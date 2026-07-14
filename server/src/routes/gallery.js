@@ -1,6 +1,7 @@
 import express from 'express';
 import GalleryImage from '../models/GalleryImage.js';
 import { verifyJWT } from '../middleware/auth.js';
+import { applyLangArray } from '../utils/translate-db.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -27,7 +28,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    res.json(await GalleryImage.find().sort('order'));
+    const images = await GalleryImage.find().sort('order');
+    res.json(applyLangArray(images, req.query.lang, { caption: 'caption' }));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -48,7 +50,7 @@ router.post('/upload', verifyJWT, upload.single('image'), async (req, res) => {
 
     fs.unlink(req.file.path, () => {});
     const url = `/uploads/${filename}`;
-    const img = await GalleryImage.create({ url, caption: req.body.caption });
+    const img = await GalleryImage.create({ url, caption: req.body.caption, captionFr: req.body.captionFr, captionAr: req.body.captionAr });
     res.status(201).json(img);
   } catch (err) {
     console.error('Gallery upload error:', err);

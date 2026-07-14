@@ -8,17 +8,18 @@ const countryFlags = {
 };
 
 export default function Testimonials() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    api.get('/testimonials')
+    const lang = i18n.language?.startsWith('ar') ? 'ar' : i18n.language?.startsWith('fr') ? 'fr' : 'en';
+    api.get(`/testimonials?lang=${lang}`)
       .then(res => setTestimonials(res.data))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [i18n.language]);
 
   return (
     <div className="pt-28 pb-24 px-4 max-w-7xl mx-auto">

@@ -8,12 +8,18 @@ const UnavailableRangeSchema = new mongoose.Schema({
 
 const RoomSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  nameFr: String,
+  nameAr: String,
   description: String,
+  descriptionFr: String,
+  descriptionAr: String,
   bedType: String,
   capacity: Number,
   pricePerNight: Number,
   images: [String],
   amenities: [String],
+  amenitiesFr: [String],
+  amenitiesAr: [String],
   isAvailable: { type: Boolean, default: true },
   unavailableRanges: [UnavailableRangeSchema]
 });

@@ -10,7 +10,7 @@ export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ guestName: '', country: '', rating: 5, text: '', isVisible: true });
+  const [form, setForm] = useState({ guestName: '', country: '', rating: 5, text: '', textFr: '', textAr: '', isVisible: true });
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const headers = { Authorization: `Bearer ${token}` };
@@ -20,13 +20,13 @@ export default function AdminTestimonials() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ guestName: '', country: '', rating: 5, text: '', isVisible: true });
+    setForm({ guestName: '', country: '', rating: 5, text: '', textFr: '', textAr: '', isVisible: true });
     setShowForm(true);
   };
 
   const openEdit = (tm) => {
     setEditing(tm._id);
-    setForm({ guestName: tm.guestName, country: tm.country || '', rating: tm.rating, text: tm.text, isVisible: tm.isVisible !== false });
+    setForm({ guestName: tm.guestName, country: tm.country || '', rating: tm.rating, text: tm.text, textFr: tm.textFr || '', textAr: tm.textAr || '', isVisible: tm.isVisible !== false });
     setShowForm(true);
   };
 
@@ -39,7 +39,7 @@ export default function AdminTestimonials() {
     }
     setShowForm(false);
     setEditing(null);
-    setForm({ guestName: '', country: '', rating: 5, text: '', isVisible: true });
+    setForm({ guestName: '', country: '', rating: 5, text: '', textFr: '', textAr: '', isVisible: true });
     fetchAll();
   };
 
@@ -91,8 +91,18 @@ export default function AdminTestimonials() {
                 </select>
               </div>
               <div>
-                <label htmlFor="tm-text" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Text</label>
+                <label htmlFor="tm-text" className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Text (EN)</label>
                 <textarea id="tm-text" value={form.text} onChange={e => setForm({...form, text: e.target.value})} rows={4} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Text (FR)</label>
+                  <textarea value={form.textFr} onChange={e => setForm({...form, textFr: e.target.value})} rows={4} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+                </div>
+                <div>
+                  <label className="block text-xs text-ocean/50 uppercase tracking-wider mb-1">Text (AR)</label>
+                  <textarea value={form.textAr} onChange={e => setForm({...form, textAr: e.target.value})} rows={4} className="w-full px-3.5 py-2.5 bg-white border border-ocean/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta/30 resize-none" />
+                </div>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={form.isVisible} onChange={e => setForm({...form, isVisible: e.target.checked})} className="w-4 h-4 rounded border-ocean/20 text-ocean focus:ring-ocean/30" />

@@ -2,6 +2,7 @@ import express from 'express';
 import Room from '../models/Room.js';
 import Booking from '../models/Booking.js';
 import { verifyJWT } from '../middleware/auth.js';
+import { applyLangArray } from '../utils/translate-db.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -26,7 +27,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 const router = express.Router();
 
-router.get('/', async (req, res) => res.json(await Room.find()));
+router.get('/', async (req, res) => {
+  const rooms = await Room.find();
+  res.json(applyLangArray(rooms, req.query.lang, {
+    name: 'name', description: 'description', amenities: 'amenities'
+  }));
+});
 
 router.post('/upload', verifyJWT, upload.single('image'), async (req, res) => {
   try {
