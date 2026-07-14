@@ -60,7 +60,7 @@ export default function BookingForm({ room, onClose }) {
     try {
       const days = Math.ceil((new Date(form.checkOut) - new Date(form.checkIn)) / (1000 * 60 * 60 * 24));
       const text = encodeURIComponent(
-        `Hi! I'd like to book the ${room.name}.\n\nFrom ${form.checkIn} to ${form.checkOut} (${days} night${days > 1 ? 's' : ''})\nGuests: ${form.guests}\n\nName: ${form.guestName}\nPhone: ${form.phone}\nEmail: ${form.email}${form.message ? `\n\nMessage: ${form.message}` : ''}`
+        `Hi! I'd like to book ${room.name}.\n\nFrom ${form.checkIn} to ${form.checkOut} (${days} night${days > 1 ? 's' : ''})\nGuests: ${form.guests}\n\nName: ${form.guestName}\nPhone: ${form.phone}${form.message ? `\n\nMessage: ${form.message}` : ''}`
       );
       window.open(`https://wa.me/${ADMIN_PHONE}?text=${text}`, '_blank');
       await api.post('/bookings', { ...form, roomName: room.name });
