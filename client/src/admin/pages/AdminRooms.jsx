@@ -46,14 +46,14 @@ export default function AdminRooms() {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
     setUploading(true);
     const fd = new FormData();
-    fd.append('image', file);
+    files.forEach(f => fd.append('images', f));
     try {
       const { data } = await api.post('/rooms/upload', fd, { headers });
-      setImageList(prev => [...prev, data.url]);
+      setImageList(prev => [...prev, ...data.map(d => d.url)]);
     } catch {
       alert("Image upload failed.");
     } finally {
@@ -226,7 +226,7 @@ export default function AdminRooms() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                       </svg>
                     )}
-                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                    <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" />
                   </label>
                 </div>
                 <p className="text-xs text-ocean/30">Click to add images. Each image is automatically resized.</p>

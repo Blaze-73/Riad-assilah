@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import RoomDetail from './RoomDetail.jsx';
+import ImageCarousel from './ImageCarousel.jsx';
+
+const placeholder = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600';
+const images = (room) => room.images?.length ? room.images : [placeholder];
 
 export default function RoomCard({ room, index = 0 }) {
   const { t } = useTranslation();
@@ -10,37 +14,47 @@ export default function RoomCard({ room, index = 0 }) {
   return (
     <>
       <motion.div
-        className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer"
+        className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
-        onClick={() => setDetailOpen(true)}
-        role="button"
-        tabIndex={0}
-        aria-label={`View details for ${room.name}`}
-        onKeyDown={(e) => { if (e.key === 'Enter') setDetailOpen(true); }}
       >
-        <div className="relative overflow-hidden aspect-[4/3]">
-          <img
-            src={room.images?.[0] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600'}
-            alt={room.name}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ocean/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative aspect-[4/3]">
+          {room.images?.length > 1 ? (
+            <ImageCarousel
+              images={room.images}
+              alt={room.name}
+              className="h-full"
+              thumbnail
+            />
+          ) : (
+            <img
+              src={room.images?.[0] || placeholder}
+              alt={room.name}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          )}
           {room.pricePerNight && (
-            <div className="absolute top-4 right-4 bg-terracotta text-white text-xs font-medium px-3 py-1 rounded-full">
+            <div className="absolute top-3 right-3 z-10 bg-terracotta text-white text-xs font-medium px-3 py-1 rounded-full">
               {room.pricePerNight} MAD
             </div>
           )}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <span className="px-6 py-2 bg-warmwhite text-ocean rounded-full text-sm font-medium">
+          <button
+            onClick={() => setDetailOpen(true)}
+            className="absolute inset-0 z-10 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-500 bg-ocean/0 hover:bg-ocean/30"
+            aria-label={`View details for ${room.name}`}
+          >
+            <span className="px-6 py-2 bg-warmwhite text-ocean rounded-full text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               View details
             </span>
-          </div>
+          </button>
         </div>
-        <div className="p-5">
+        <button
+          onClick={() => setDetailOpen(true)}
+          className="w-full text-left p-5 cursor-pointer"
+        >
           <div className="flex items-start justify-between mb-2">
             <h3 className="font-serif text-xl text-ocean">{room.name}</h3>
           </div>
@@ -55,7 +69,7 @@ export default function RoomCard({ room, index = 0 }) {
               ))}
             </div>
           )}
-        </div>
+        </button>
       </motion.div>
 
       {detailOpen && <RoomDetail room={room} onClose={() => setDetailOpen(false)} />}

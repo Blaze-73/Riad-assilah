@@ -2,11 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import BookingForm from './BookingForm.jsx';
+import ImageCarousel from './ImageCarousel.jsx';
+
+const placeholder = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800';
 
 export default function RoomDetail({ room, onClose }) {
   const { t } = useTranslation();
   const [showBooking, setShowBooking] = useState(false);
   const modalRef = useRef(null);
+  const images = room.images?.length ? room.images : [placeholder];
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -38,15 +42,11 @@ export default function RoomDetail({ room, onClose }) {
       >
         {!showBooking ? (
           <>
-            <div className="relative">
-              <img
-                src={room.images?.[0] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800'}
-                alt={room.name}
-                className="w-full h-64 md:h-80 object-cover rounded-t-2xl"
-              />
+            <div className="relative rounded-t-2xl overflow-hidden">
+              <ImageCarousel images={images} alt={room.name} />
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-2 bg-warmwhite/90 rounded-full shadow-lg hover:bg-warmwhite transition-colors"
+                className="absolute top-4 right-4 z-20 p-2 bg-warmwhite/90 rounded-full shadow-lg hover:bg-warmwhite transition-colors"
                 aria-label="Close"
               >
                 <svg className="w-5 h-5 text-ocean" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@ export default function RoomDetail({ room, onClose }) {
                 </svg>
               </button>
               {room.pricePerNight && (
-                <div className="absolute top-4 left-4 bg-terracotta text-white px-3 py-1 rounded-full text-sm font-medium">
+                <div className="absolute top-4 left-4 z-20 bg-terracotta text-white px-3 py-1 rounded-full text-sm font-medium">
                   {room.pricePerNight} MAD / {t('rooms_per_night')}
                 </div>
               )}
@@ -78,17 +78,6 @@ export default function RoomDetail({ room, onClose }) {
                         </svg>
                         {a}
                       </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {room.images?.length > 1 && (
-                <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-ocean mb-3">Gallery</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {room.images.slice(1).map((img, i) => (
-                      <img key={i} src={img} alt="" className="w-full h-20 object-cover rounded-lg" />
                     ))}
                   </div>
                 </div>

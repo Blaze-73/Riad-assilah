@@ -34,20 +34,23 @@ router.get('/', async (req, res) => {
   }));
 });
 
-router.post('/upload', verifyJWT, upload.single('image'), async (req, res) => {
+router.post('/upload', verifyJWT, upload.array('images', 20), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'Aucune image fournie.' });
-    const filename = `${path.parse(req.file.filename).name}-opt.jpg`;
-    const outputPath = path.join(uploadDir, filename);
-    await sharp(req.file.path)
-      .resize(1200, undefined, { fit: 'inside', withoutEnlargement: true })
-      .jpeg({ quality: 85 })
-      .toFile(outputPath);
-    fs.unlink(req.file.path, () => {});
-    res.json({ url: `/uploads/${filename}` });
+    if (!req.files || req.files.length === 0) return res.status(400).json({ error: 'Aucune image fournie.' });
+    const results = await Promise.all(req.files.map(async (file) => {
+      const filename = `${path.parse(file.filename).name}-opt.jpg`;
+      const outputPath = path.join(uploadDir, filename);
+      await sharp(file.path)
+        .resize(1200, undefined, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 85 })
+        .toFile(outputPath);
+      fs.unlink(file.path, () => {});
+      return { url: `/uploads/${filename}` };
+    }));
+    res.json(results);
   } catch (err) {
     console.error('Room image upload error:', err);
-    if (req.file) fs.unlink(req.file.path, () => {});
+    req.files?.forEach(f => fs.unlink(f.path, () => {}));
     res.status(500).json({ error: err.message });
   }
 });
