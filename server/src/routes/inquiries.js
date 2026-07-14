@@ -6,10 +6,22 @@ const router = express.Router();
 
 // public submit
 router.post('/', async (req, res) => {
-  const inquiry = await Inquiry.create(req.body);
-  const { sendInquiryNotification } = await import('../utils/mailer.js');
-  sendInquiryNotification(inquiry);
-  res.status(201).json(inquiry);
+  try {
+    const { checkIn, checkOut } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+    if (checkIn && checkIn < today) {
+      return res.status(400).json({ error: "Check-in date cannot be in the past." });
+    }
+    if (checkIn && checkOut && checkOut <= checkIn) {
+      return res.status(400).json({ error: 'Check-out must be after check-in.' });
+    }
+    const inquiry = await Inquiry.create(req.body);
+    const { sendInquiryNotification } = await import('../utils/mailer.js');
+    sendInquiryNotification(inquiry);
+    res.status(201).json(inquiry);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // admin list, status update, delete

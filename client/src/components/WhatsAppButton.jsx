@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 
 export default function WhatsAppButton() {
-  const phone = '212612345678';
-  const baseText = encodeURIComponent('Hello, I would like to book a room.');
+  const phone = '212621010978';
+  const baseText = encodeURIComponent('Hi! I would like to book a room.');
   const url = `https://wa.me/${phone}?text=${baseText}`;
 
   return (

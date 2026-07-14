@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import RoomCard from '../components/RoomCard.jsx';
@@ -25,6 +25,8 @@ const heroWords = {
   fr: ['Bienvenue', 'dans', 'notre', 'riad', 'caché', 'dans', 'la', 'médina', "d'Asilah"]
 };
 
+const heroImages = ['/images/rm2.jpg', '/images/rm3.jpg', '/images/rm8.jpg'];
+
 const countryFlags = {
   FR: '🇫🇷', GB: '🇬🇧', DE: '🇩🇪', AE: '🇦🇪', AU: '🇦🇺', US: '🇺🇸', CA: '🇨🇦', ES: '🇪🇸', IT: '🇮🇹'
 };
@@ -35,6 +37,7 @@ export default function Home() {
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.05]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6]);
 
+  const [heroIdx, setHeroIdx] = useState(0);
   const [rooms, setRooms] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -45,6 +48,11 @@ export default function Home() {
     api.get(`/gallery?lang=${lang}`).then(r => setGallery(r.data)).catch(() => {});
     api.get(`/testimonials?lang=${lang}`).then(r => setTestimonials(r.data)).catch(() => {});
   }, [i18n.language]);
+
+  useEffect(() => {
+    const t = setInterval(() => setHeroIdx(p => (p + 1) % heroImages.length), 5000);
+    return () => clearInterval(t);
+  }, []);
 
   const showRooms = rooms.length > 0;
   const showGallery = gallery.length > 0;
@@ -57,12 +65,28 @@ export default function Home() {
         className="relative h-screen flex items-center justify-center overflow-hidden"
         style={{ scale: heroScale, opacity: heroOpacity }}
       >
-        <div className="absolute inset-0 bg-ocean" />
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-60"
-          style={{ backgroundImage: "url('/images/hero.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ocean/40 via-transparent to-ocean/70" />
+        <div className="absolute inset-0 bg-neutral-950" />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={heroIdx}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeInOut' }}
+          >
+            <motion.div
+              className="w-full h-full bg-cover bg-center"
+              style={{ backgroundImage: `url(${heroImages[heroIdx]})` }}
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.08 }}
+              transition={{ duration: 5, ease: 'linear' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-neutral-950/20 to-neutral-950/80" />
 
         <div className="relative z-10 text-center px-4 max-w-5xl">
           <motion.h1
@@ -120,8 +144,20 @@ export default function Home() {
           </motion.div>
         </div>
 
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 flex gap-2.5">
+          {heroImages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setHeroIdx(i)}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                i === heroIdx ? 'bg-warmwhite w-6' : 'bg-warmwhite/40 w-2 hover:bg-warmwhite/60'
+              }`}
+            />
+          ))}
+        </div>
+
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 0.6 }}
@@ -149,12 +185,12 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500" alt="Riad" loading="lazy" className="rounded-2xl h-72 w-full object-cover" />
-              <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=500" alt="Asilah" loading="lazy" className="rounded-2xl h-40 w-full object-cover" />
+              <img src="/images/beach.jpg" alt="Beach" loading="lazy" className="rounded-2xl h-72 w-full object-cover" />
+              <img src="/images/food.jpg" alt="Food" loading="lazy" className="rounded-2xl h-40 w-full object-cover" />
             </div>
             <div className="space-y-4 pt-8">
-              <img src="https://images.unsplash.com/photo-1590496794008-383c8070b257?w=500" alt="Decor" loading="lazy" className="rounded-2xl h-48 w-full object-cover" />
-              <img src="https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=500" alt="Courtyard" loading="lazy" className="rounded-2xl h-64 w-full object-cover" />
+              <img src="/images/mdina.jpeg" alt="Medina" loading="lazy" className="rounded-2xl h-48 w-full object-cover" />
+              <img src="/images/rm8.jpg" alt="Room" loading="lazy" className="rounded-2xl h-64 w-full object-cover" />
             </div>
           </div>
         </motion.div>
@@ -308,7 +344,7 @@ export default function Home() {
             <Link to="/contact" className="px-8 py-3 bg-terracotta text-white rounded-full text-sm font-medium hover:bg-gold transition-colors">
               {t('nav_contact')}
             </Link>
-            <a href="https://wa.me/212612345678?text=Hello%2C%20I%20would%20like%20to%20book." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-warmwhite/30 text-warmwhite rounded-full text-sm font-medium hover:bg-warmwhite/10 transition-colors">
+            <a href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-warmwhite/30 text-warmwhite rounded-full text-sm font-medium hover:bg-warmwhite/10 transition-colors">
               {t('rooms_book')}
             </a>
           </div>

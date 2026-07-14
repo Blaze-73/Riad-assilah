@@ -104,6 +104,13 @@ router.patch('/:id/availability', verifyJWT, async (req, res) => {
   const room = await Room.findById(req.params.id);
   if (!room) return res.status(404).json({ error: 'Room not found' });
   const { start, end, note } = req.body;
+  const today = new Date().toISOString().slice(0, 10);
+  if (start && start < today) {
+    return res.status(400).json({ error: "Start date cannot be in the past." });
+  }
+  if (end && end <= start) {
+    return res.status(400).json({ error: 'End date must be after start date.' });
+  }
   const range = { start, end, note: note || '' };
   room.unavailableRanges.push(range);
   await room.save();

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -6,12 +6,23 @@ import api from '../services/api.js';
 
 export default function Contact() {
   const { t } = useTranslation();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const checkIn = watch('checkIn');
+
   const onSubmit = async (data) => {
+    if (data.checkIn && data.checkIn < todayStr) {
+      setError("Check-in date cannot be in the past.");
+      return;
+    }
+    if (data.checkIn && data.checkOut && data.checkOut <= data.checkIn) {
+      setError('Check-out must be after check-in.');
+      return;
+    }
     setLoading(true);
     setError(false);
     try {
@@ -79,16 +90,18 @@ export default function Contact() {
                   {...register('checkIn')}
                   placeholder={t('contact_checkin')}
                   type="date"
+                  min={todayStr}
                   className="w-full px-4 py-3.5 bg-white border border-ocean/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-all text-sm"
                 />
                 <input
                   {...register('checkOut')}
                   placeholder={t('contact_checkout')}
                   type="date"
+                  min={checkIn || todayStr}
                   className="w-full px-4 py-3.5 bg-white border border-ocean/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-all text-sm"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-5">
+              <div>
                 <input
                   {...register('guests')}
                   placeholder={t('contact_guests')}
@@ -153,7 +166,7 @@ export default function Contact() {
           </div>
 
           <a
-            href="https://wa.me/212612345678?text=Hello%2C%20I%20would%20like%20to%20book."
+            href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room."
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 w-full px-6 py-3.5 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"

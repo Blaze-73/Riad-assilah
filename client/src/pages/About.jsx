@@ -27,20 +27,31 @@ export default function About() {
               </div>
             </div>
           </div>
-          <div className="space-y-6">
-            <motion.img
-              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
-              alt="Riad interior"
-              loading="lazy"
-              className="rounded-2xl w-full h-96 object-cover"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            />
-            <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <motion.img
-                src="https://images.unsplash.com/photo-1590496794008-383c8070b257?w=400"
-                alt="Traditional decor"
+                src="/images/beach.jpg"
+                alt="Beach"
+                loading="lazy"
+                className="rounded-2xl h-72 w-full object-cover"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              />
+              <motion.img
+                src="/images/food.jpg"
+                alt="Food"
+                loading="lazy"
+                className="rounded-2xl h-40 w-full object-cover"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              />
+            </div>
+            <div className="space-y-4 pt-8">
+              <motion.img
+                src="/images/mdina.jpeg"
+                alt="Medina"
                 loading="lazy"
                 className="rounded-2xl h-48 w-full object-cover"
                 initial={{ opacity: 0, y: 20 }}
@@ -48,12 +59,12 @@ export default function About() {
                 transition={{ duration: 0.6, delay: 0.4 }}
               />
               <motion.img
-                src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400"
-                alt="Asilah streets"
+                src="/images/rm8.jpg"
+                alt="Room"
                 loading="lazy"
-                className="rounded-2xl h-48 w-full object-cover"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl h-64 w-full object-cover"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
               />
             </div>

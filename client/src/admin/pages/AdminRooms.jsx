@@ -300,7 +300,7 @@ export default function AdminRooms() {
                   </div>
                   <div>
                     <label className="block text-[10px] text-ocean/50 uppercase mb-0.5">End</label>
-                    <input type="date" value={availForm.end} onChange={e => setAvailForm({...availForm, end: e.target.value})} className="px-2.5 py-1.5 bg-white border border-ocean/10 rounded-lg text-xs" />
+                    <input type="date" value={availForm.end} onChange={e => setAvailForm({...availForm, end: e.target.value})} min={availForm.start || ''} className="px-2.5 py-1.5 bg-white border border-ocean/10 rounded-lg text-xs" />
                   </div>
                   <div className="flex-1">
                     <label className="block text-[10px] text-ocean/50 uppercase mb-0.5">Note</label>
