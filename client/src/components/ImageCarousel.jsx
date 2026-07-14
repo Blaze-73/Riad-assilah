@@ -1,12 +1,27 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 
-export default function ImageCarousel({ images, alt, className, thumbnail = false, onImageClick }) {
-  const [index, setIndex] = useState(0);
+export default function ImageCarousel({ images, alt, className, thumbnail = false, onImageClick, interval = 4000 }) {
+  const [index, setIndex] = useState(() => Math.floor(Math.random() * images.length));
+  const [paused, setPaused] = useState(false);
   const touchStart = useRef(null);
   const containerRef = useRef(null);
+  const timerRef = useRef(null);
+  const stagger = useMemo(() => Math.random() * interval, []);
 
   const prev = useCallback(() => setIndex(i => (i === 0 ? images.length - 1 : i - 1)), [images.length]);
   const next = useCallback(() => setIndex(i => (i === images.length - 1 ? 0 : i + 1)), [images.length]);
+
+  useEffect(() => {
+    if (images.length < 2 || paused) return;
+    const start = () => {
+      timerRef.current = setInterval(next, interval);
+    };
+    const delay = setTimeout(start, stagger);
+    return () => {
+      clearTimeout(delay);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [images.length, paused, interval, next, stagger]);
 
   const handleTouchStart = useCallback((e) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -32,9 +47,11 @@ export default function ImageCarousel({ images, alt, className, thumbnail = fals
       className={`relative overflow-hidden select-none ${className || ''}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
       <div
-        className="flex transition-transform duration-300 ease-out"
+        className="flex transition-transform duration-500 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {images.map((src, i) => (
@@ -55,7 +72,7 @@ export default function ImageCarousel({ images, alt, className, thumbnail = fals
         <>
           <button
             type="button"
-            onClick={prev}
+            onClick={() => { prev(); setPaused(true); setTimeout(() => setPaused(false), interval * 2); }}
             className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors"
             aria-label="Previous image"
           >
@@ -65,7 +82,7 @@ export default function ImageCarousel({ images, alt, className, thumbnail = fals
           </button>
           <button
             type="button"
-            onClick={next}
+            onClick={() => { next(); setPaused(true); setTimeout(() => setPaused(false), interval * 2); }}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors"
             aria-label="Next image"
           >
@@ -78,7 +95,7 @@ export default function ImageCarousel({ images, alt, className, thumbnail = fals
               <button
                 key={i}
                 type="button"
-                onClick={() => goTo(i)}
+                onClick={() => { goTo(i); setPaused(true); setTimeout(() => setPaused(false), interval * 2); }}
                 className={`w-1.5 h-1.5 rounded-full transition-all ${
                   i === index ? 'bg-white w-3' : 'bg-white/50 hover:bg-white/70'
                 }`}

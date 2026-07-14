@@ -4,23 +4,23 @@ import { useTranslation } from 'react-i18next';
 const experiences = [
   {
     key: 'medina',
-    image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800',
+    image: '/images/mdina.jpeg',
     color: 'from-ocean/80'
   },
   {
     key: 'beach',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+    image: '/images/beach.jpg',
     color: 'from-ocean/60'
   },
   {
-    key: 'hammam',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbec6d?w=800',
-    color: 'from-terracotta/60'
+    key: 'food',
+    image: '/images/food.jpg',
+    color: 'from-gold/60'
   },
   {
-    key: 'cooking',
-    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800',
-    color: 'from-gold/60'
+    key: 'sunset',
+    image: '/images/sunset.jpg',
+    color: 'from-terracotta/60'
   }
 ];
 
