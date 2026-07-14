@@ -1,0 +1,174 @@
+You are an expert fullstack developer and UX designer specializing in 
+hospitality websites for boutique Moroccan properties.
+
+Build a complete, production-quality riad guesthouse website using the 
+MERN stack (MongoDB, Express, React + Vite, Node.js) with Tailwind CSS.
+
+---
+
+## CONTEXT
+
+The client is a small riad or guesthouse in Asilah, Morocco — a coastal 
+medina town known for its blue-and-white painted walls, murals, and 
+Atlantic character. The property has 4–8 rooms, offers breakfast, and 
+currently relies on Booking.com (losing 15–18% commission per booking).
+
+The goal of the site is to:
+1. Replace Booking.com as the primary booking channel
+2. Build trust with international tourists (European, mostly French-speaking)
+3. Convert visitors via WhatsApp as the primary CTA
+4. Be manageable by a non-technical riad owner via a simple admin panel
+
+---
+
+## DESIGN DIRECTION
+
+- Palette: deep ocean blue (#1a3a5c), warm white (#f8f5f0), terracotta 
+  accent (#c4714a), soft gold (#d4a843)
+- Typography: Playfair Display (headings) + Inter (body)
+- Aesthetic: luxury boutique — think high-end editorial travel, not 
+  generic hotel template
+- Full-bleed hero with cinematic photography
+- Subtle scroll animations (Framer Motion)
+- RTL-ready layout for Arabic language support
+
+---
+
+## PAGES & SECTIONS
+
+### Public site (React frontend)
+
+1. **Hero** — Full-bleed image, property name in Playfair Display, 
+   tagline in French/English, floating WhatsApp CTA button (sticky)
+
+2. **About** — Warm narrative about the riad's history, the medina, 
+   the owners. Split layout: text left, photo mosaic right.
+
+3. **Rooms** — Card grid (3 per row, collapses to 1 on mobile). Each 
+   card: room photo, name, bed type, capacity, short description, 
+   "Book via WhatsApp" button that pre-fills a message.
+
+4. **Gallery** — Masonry photo grid with lightbox (use yet-another-react-
+   lightbox). Photos pulled from Cloudinary.
+
+5. **Experience** — What guests can do: medina walk, beach, local 
+   hammam, cooking class. Icon + short text cards.
+
+6. **Testimonials** — 3-column review cards with guest name, country 
+   flag emoji, rating stars, review text. Pulled from MongoDB.
+
+7. **Booking / Contact** — Simple inquiry form: name, email, check-in, 
+   check-out, number of guests, message. Sends email via Nodemailer + 
+   stores inquiry in MongoDB. No payment processing needed.
+
+8. **Footer** — Address, phone, WhatsApp, Google Maps link, language 
+   switcher (AR / FR / EN using i18next)
+
+### Admin panel (protected route, JWT auth)
+
+- Login page
+- Dashboard: list of booking inquiries (name, dates, guests, status)
+- Ability to mark inquiry as: pending / confirmed / cancelled
+- Room manager: add/edit/delete rooms with Cloudinary image upload
+- Testimonials manager: add/edit/delete reviews
+- Gallery manager: upload/delete photos
+
+---
+
+## BACKEND (Express + MongoDB)
+
+### Models (Mongoose)
+Room: { name, description, bedType, capacity, pricePerNight,
+images: [cloudinaryUrl], amenities: [String], isAvailable }
+Inquiry: { guestName, email, checkIn, checkOut, guests, message,
+status: enum['pending','confirmed','cancelled'], createdAt }
+Testimonial: { guestName, country, rating, text, isVisible }
+GalleryImage: { url, caption, order }
+Admin: { email, passwordHash }
+
+### API routes
+POST   /api/inquiries          — submit booking inquiry (public)
+GET    /api/inquiries          — list all (admin only)
+PATCH  /api/inquiries/:id      — update status (admin only)
+GET    /api/rooms              — list all rooms (public)
+POST   /api/rooms              — create room (admin only)
+PUT    /api/rooms/:id          — update room (admin only)
+DELETE /api/rooms/:id          — delete room (admin only)
+GET    /api/testimonials       — list visible (public)
+POST   /api/testimonials       — add (admin only)
+DELETE /api/testimonials/:id   — delete (admin only)
+GET    /api/gallery            — list all images (public)
+POST   /api/gallery/upload     — upload to Cloudinary (admin only)
+DELETE /api/gallery/:id        — delete (admin only)
+POST   /api/auth/login         — returns JWT
+GET    /api/auth/me            — verify token
+
+---
+
+## WHATSAPP INTEGRATION
+
+Every "Book Now" button should open:
+https://wa.me/212XXXXXXXXX?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server...
+Pre-fill the message with room name and dates if the user has interacted 
+with the booking form. Make this a reusable `<WhatsAppButton>` component.
+
+---
+
+## MULTILINGUAL (i18next)
+
+Support 3 languages: French (default), English, Arabic (RTL).
+Use `react-i18next`. Store translations in `/locales/fr.json`, 
+`/locales/en.json`, `/locales/ar.json`.
+Language switcher in the navbar and footer.
+On Arabic, apply `dir="rtl"` to the `<html>` tag dynamically.
+
+---
+
+## TECH STACK
+
+Frontend:
+- React 18 + Vite
+- Tailwind CSS
+- Framer Motion (scroll animations)
+- react-i18next (multilingual)
+- yet-another-react-lightbox (gallery)
+- axios (API calls)
+- react-hook-form (forms)
+- react-router-dom v6
+
+Backend:
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT (jsonwebtoken + bcrypt)
+- Cloudinary SDK (image uploads)
+- Nodemailer (inquiry email notifications)
+- cors, dotenv, express-validator
+
+Deployment:
+- Frontend: Vercel
+- Backend: Railway or Render
+- DB: MongoDB Atlas (free tier)
+- Images: Cloudinary (free tier)
+
+---
+
+## DELIVERABLES
+
+1. Complete folder structure with all files
+2. All Mongoose models
+3. All Express routes and controllers
+4. Full React frontend with all 8 sections
+5. Admin panel with all management features
+6. i18n translation files (FR/EN/AR skeleton)
+7. .env.example for both frontend and backend
+8. README with setup instructions and deployment guide
+
+---
+
+## CONSTRAINTS
+
+- Mobile-first, fully responsive (the owner's clients book on phones)
+- No payment gateway needed — WhatsApp and email inquiry only
+- Admin panel must be simple enough for a non-technical owner
+- Page load under 2s on a 4G connection (lazy-load images, code split)
+- All text in the UI should use translation keys, not hardcoded strings
