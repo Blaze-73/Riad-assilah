@@ -20,7 +20,10 @@ const staggerItem = {
   })
 };
 
-const heroWords = ['Welcome', 'to', 'our', 'riad', 'hidden', 'in', 'Asilah'];
+const heroWords = {
+  en: ['Welcome', 'to', 'our', 'riad', 'hidden', 'in', 'Asilah'],
+  fr: ['Bienvenue', 'dans', 'notre', 'riad', 'caché', 'dans', 'la', 'médina', "d'Asilah"]
+};
 
 const countryFlags = {
   FR: '🇫🇷', GB: '🇬🇧', DE: '🇩🇪', AE: '🇦🇪', AU: '🇦🇺', US: '🇺🇸', CA: '🇨🇦', ES: '🇪🇸', IT: '🇮🇹'
@@ -68,10 +71,17 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {i18n.language?.startsWith('ar') ? (
-              t('site_title')
+            {(i18n.language?.startsWith('ar') ? (
+              <motion.span
+                custom={0}
+                variants={staggerItem}
+                initial="hidden"
+                animate="visible"
+              >
+                {t('site_title')}
+              </motion.span>
             ) : (
-              heroWords.map((word, i) => (
+              (heroWords[i18n.language?.startsWith('fr') ? 'fr' : 'en']).map((word, i) => (
                 <motion.span
                   key={i}
                   className="inline-block mr-[0.25em]"
@@ -83,7 +93,7 @@ export default function Home() {
                   {word}
                 </motion.span>
               ))
-            )}
+            ))}
           </motion.h1>
 
           <motion.p

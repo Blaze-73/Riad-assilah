@@ -58,12 +58,13 @@ export default function BookingForm({ room, onClose }) {
     setSubmitting(true);
     setError('');
     try {
-      await api.post('/bookings', { ...form, roomName: room.name });
-      setDone(true);
+      const days = Math.ceil((new Date(form.checkOut) - new Date(form.checkIn)) / (1000 * 60 * 60 * 24));
       const text = encodeURIComponent(
-        `New Booking - ${room.name}\nName: ${form.guestName}\nEmail: ${form.email}\nPhone: ${form.phone}\nCheck-in: ${form.checkIn}\nCheck-out: ${form.checkOut}\nGuests: ${form.guests}\nMessage: ${form.message || '-'}`
+        `Hi! I'd like to book the ${room.name}.\n\nFrom ${form.checkIn} to ${form.checkOut} (${days} night${days > 1 ? 's' : ''})\nGuests: ${form.guests}\n\nName: ${form.guestName}\nPhone: ${form.phone}\nEmail: ${form.email}${form.message ? `\n\nMessage: ${form.message}` : ''}`
       );
       window.open(`https://wa.me/${ADMIN_PHONE}?text=${text}`, '_blank');
+      await api.post('/bookings', { ...form, roomName: room.name });
+      setDone(true);
     } catch {
       setError('Error sending. Please try again.');
     } finally {
@@ -80,7 +81,7 @@ export default function BookingForm({ room, onClose }) {
           </svg>
         </div>
         <h3 className="font-serif text-xl text-ocean mb-2">Booking sent!</h3>
-        <p className="text-ocean/60 text-sm mb-6">We will contact you shortly via WhatsApp.</p>
+         <p className="text-ocean/60 text-sm mb-6">We will contact you shortly to confirm your reservation.</p>
         <button onClick={onClose} className="px-6 py-2 bg-ocean text-white rounded-xl text-sm font-medium hover:bg-ocean/90 transition-colors">Close</button>
       </div>
     );
