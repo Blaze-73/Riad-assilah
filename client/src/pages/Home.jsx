@@ -260,7 +260,7 @@ export default function Home() {
       )}
 
       {/* ─── CTA ─── */}
-      <section className="py-24 px-4 bg-ocean text-warmwhite">
+      <section className="py-24 px-4 bg-white">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -268,13 +268,13 @@ export default function Home() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-serif text-3xl md:text-4xl mb-4">{t('contact_title')}</h2>
-          <p className="text-warmwhite/60 mb-8 max-w-lg mx-auto">{t('contact_subtitle')}</p>
+          <h2 className="font-serif text-3xl md:text-4xl text-ocean mb-4">{t('contact_title')}</h2>
+          <p className="text-ocean/60 mb-8 max-w-lg mx-auto">{t('contact_subtitle')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contact" className="px-8 py-3 bg-terracotta text-white rounded-full text-sm font-medium hover:bg-gold transition-colors">
               {t('nav_contact')}
             </Link>
-            <a href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-warmwhite/30 text-warmwhite rounded-full text-sm font-medium hover:bg-warmwhite/10 transition-colors">
+            <a href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-ocean/20 text-ocean rounded-full text-sm font-medium hover:bg-ocean/5 transition-colors">
               {t('rooms_book')}
             </a>
           </div>
