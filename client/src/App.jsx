@@ -3,7 +3,6 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
 import LanguageSync from './components/LanguageSync.jsx';
-import CustomCursor from './components/CustomCursor.jsx';
 import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
 import Rooms from './pages/Rooms.jsx';
@@ -21,7 +20,6 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <LanguageSync />
-      <CustomCursor />
       <Navbar />
       <main className="flex-1">
         <Routes>

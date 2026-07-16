@@ -7,21 +7,11 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 export default function Navbar() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === '/';
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   useEffect(() => {
     setOpen(false);
   }, [location]);
-
-  const transparent = isHome && !scrolled;
 
   const navItems = [
     { to: '/about', label: t('nav_about') },
@@ -34,9 +24,7 @@ export default function Navbar() {
 
   return (
     <motion.header
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-warmwhite/95 backdrop-blur-md shadow-sm' : transparent ? 'bg-transparent' : 'bg-warmwhite/95 backdrop-blur-md'
-      }`}
+      className="fixed w-full z-50 bg-warmwhite/95 backdrop-blur-md shadow-sm transition-all duration-300"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
@@ -44,11 +32,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         <Link
           to="/"
-          className={`font-serif text-2xl tracking-wide transition-colors ${
-            transparent ? 'text-warmwhite' : 'text-ocean'
-          }`}
+          className="font-serif text-2xl tracking-wide text-ocean"
         >
-          Riad Asilah
+          RIAD ASILAH
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -58,24 +44,18 @@ export default function Navbar() {
               to={item.to}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 location.pathname === item.to
-                  ? transparent
-                    ? 'bg-warmwhite/20 text-warmwhite'
-                    : 'bg-ocean/10 text-ocean'
-                  : transparent
-                    ? 'text-warmwhite/80 hover:text-warmwhite hover:bg-warmwhite/10'
-                    : 'text-ocean/70 hover:text-ocean hover:bg-ocean/5'
+                  ? 'bg-ocean/10 text-ocean'
+                  : 'text-ocean/70 hover:text-ocean hover:bg-ocean/5'
               }`}
             >
               {item.label}
             </Link>
           ))}
           <div className="ml-2 flex items-center gap-1">
-            <LanguageSwitcher transparent={transparent} />
+            <LanguageSwitcher transparent={false} />
             <Link
               to="/admin/login"
-              className={`p-2 rounded-full transition-colors ${
-                transparent ? 'text-warmwhite/60 hover:text-warmwhite hover:bg-warmwhite/10' : 'text-ocean/40 hover:text-ocean hover:bg-ocean/5'
-              }`}
+              className="p-2 rounded-full transition-colors text-ocean/40 hover:text-ocean hover:bg-ocean/5"
               aria-label="Administration"
               title="Administration"
             >
@@ -89,7 +69,7 @@ export default function Navbar() {
 
         <button
           type="button"
-          className={`md:hidden p-2 transition-colors ${transparent ? 'text-warmwhite' : 'text-ocean'}`}
+          className="md:hidden p-2 text-ocean transition-colors"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >

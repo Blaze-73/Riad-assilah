@@ -12,19 +12,6 @@ const fadeUp = {
   transition: { duration: 0.6 }
 };
 
-const staggerItem = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.08, duration: 0.5 }
-  })
-};
-
-const heroWords = {
-  en: ['Welcome', 'to', 'our', 'riad', 'hidden', 'in', 'Asilah'],
-  fr: ['Bienvenue', 'dans', 'notre', 'riad', 'caché', 'dans', 'la', 'médina', "d'Asilah"]
-};
-
 const heroImages = ['/images/rm2.jpg', '/images/rm3.jpg', '/images/rm8.jpg'];
 
 const countryFlags = {
@@ -91,49 +78,34 @@ export default function Home() {
         <div className="relative z-10 text-center px-4 max-w-5xl">
           <motion.h1
             className="font-serif text-5xl md:text-7xl lg:text-8xl text-warmwhite mb-6 leading-tight"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            {(i18n.language?.startsWith('ar') ? (
-              <motion.span
-                custom={0}
-                variants={staggerItem}
-                initial="hidden"
-                animate="visible"
-              >
-                {t('site_title')}
-              </motion.span>
+            {i18n.language?.startsWith('ar') ? (
+              t('site_title')
             ) : (
-              (heroWords[i18n.language?.startsWith('fr') ? 'fr' : 'en']).map((word, i) => (
-                <motion.span
-                  key={i}
-                  className="inline-block mr-[0.25em]"
-                  custom={i}
-                  variants={staggerItem}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {word}
-                </motion.span>
-              ))
-            ))}
+              <>
+                Welcome To Asilah's<br />
+                Hidden Riad
+              </>
+            )}
           </motion.h1>
 
           <motion.p
             className="text-lg md:text-xl text-warmwhite/80 mb-10 max-w-2xl mx-auto font-light"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.6 }}
           >
             {t('hero_subtitle')}
           </motion.p>
 
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
           >
             <Link to="/rooms" className="px-8 py-3 bg-terracotta text-white rounded-full text-sm font-medium hover:bg-gold transition-colors tracking-wide">
               {t('nav_rooms')}
@@ -287,6 +259,28 @@ export default function Home() {
         </section>
       )}
 
+      {/* ─── CTA ─── */}
+      <section className="py-24 px-4 bg-ocean text-warmwhite">
+        <motion.div
+          className="max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-serif text-3xl md:text-4xl mb-4">{t('contact_title')}</h2>
+          <p className="text-warmwhite/60 mb-8 max-w-lg mx-auto">{t('contact_subtitle')}</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/contact" className="px-8 py-3 bg-terracotta text-white rounded-full text-sm font-medium hover:bg-gold transition-colors">
+              {t('nav_contact')}
+            </Link>
+            <a href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-warmwhite/30 text-warmwhite rounded-full text-sm font-medium hover:bg-warmwhite/10 transition-colors">
+              {t('rooms_book')}
+            </a>
+          </div>
+        </motion.div>
+      </section>
+
       {/* ─── TESTIMONIALS ─── */}
       {showTestimonials && (
         <section className="py-24 px-4 max-w-7xl mx-auto">
@@ -328,28 +322,6 @@ export default function Home() {
           </motion.div>
         </section>
       )}
-
-      {/* ─── CTA ─── */}
-      <section className="py-24 px-4 bg-ocean text-warmwhite">
-        <motion.div
-          className="max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="font-serif text-3xl md:text-4xl mb-4">{t('contact_title')}</h2>
-          <p className="text-warmwhite/60 mb-8 max-w-lg mx-auto">{t('contact_subtitle')}</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact" className="px-8 py-3 bg-terracotta text-white rounded-full text-sm font-medium hover:bg-gold transition-colors">
-              {t('nav_contact')}
-            </Link>
-            <a href="https://wa.me/212621010978?text=Hi%21%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-warmwhite/30 text-warmwhite rounded-full text-sm font-medium hover:bg-warmwhite/10 transition-colors">
-              {t('rooms_book')}
-            </a>
-          </div>
-        </motion.div>
-      </section>
     </>
   );
 }
