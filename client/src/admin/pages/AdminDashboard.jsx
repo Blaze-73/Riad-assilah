@@ -167,14 +167,15 @@ export default function AdminDashboard() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-ocean/5 overflow-hidden mb-8">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto hidden lg:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-ocean text-warmwhite">
                   <th scope="col" className="px-4 py-3 text-left font-medium">Client</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden sm:table-cell">Room</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden md:table-cell">Check-in</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden md:table-cell">Check-out</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Room</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Date</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Check-in</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Check-out</th>
                   <th scope="col" className="px-4 py-3 text-left font-medium">Status</th>
                   <th scope="col" className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
@@ -186,9 +187,10 @@ export default function AdminDashboard() {
                       <span className="font-medium text-ocean block">{b.guestName}</span>
                       <span className="text-ocean/40 text-xs">{b.email}</span>
                     </td>
-                    <td className="px-4 py-3 text-ocean/60 hidden sm:table-cell">{b.roomName || '-'}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden md:table-cell">{b.checkIn ? new Date(b.checkIn).toLocaleDateString() : '-'}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden md:table-cell">{b.checkOut ? new Date(b.checkOut).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{b.roomName || '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60 text-xs whitespace-nowrap">{b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{b.checkIn ? new Date(b.checkIn).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{b.checkOut ? new Date(b.checkOut).toLocaleDateString() : '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                         b.status === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-200' :
@@ -209,13 +211,13 @@ export default function AdminDashboard() {
                       <div className="flex gap-1.5 justify-end">
                         {b.status !== 'confirmed' && (
                           <button onClick={() => setConfirmAction({ id: b._id, status: 'confirmed', type: 'bookings' })}
-                            className="px-2.5 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">
+                            className="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">
                             Confirm
                           </button>
                         )}
                         {b.status !== 'cancelled' && (
                           <button onClick={() => setConfirmAction({ id: b._id, status: 'cancelled', type: 'bookings' })}
-                            className="px-2.5 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors">
+                            className="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors">
                             Cancel
                           </button>
                         )}
@@ -225,6 +227,51 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="divide-y divide-ocean/5 lg:hidden">
+            {bookings.slice(0, 10).map(b => (
+              <div key={b._id} className="p-4 space-y-2">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="font-medium text-ocean">{b.guestName}</span>
+                    <span className="text-ocean/40 text-xs block">{b.email}</span>
+                  </div>
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${
+                    b.status === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-200' :
+                    b.status === 'cancelled' ? 'bg-red-50 text-red-700 ring-1 ring-red-200' :
+                    b.status === 'new' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200' :
+                    'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                      b.status === 'confirmed' ? 'bg-green-500' :
+                      b.status === 'cancelled' ? 'bg-red-500' :
+                      b.status === 'new' ? 'bg-blue-500' :
+                      'bg-yellow-500'
+                    }`} />
+                    {b.status}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ocean/60">
+                  <span>Room: {b.roomName || '-'}</span>
+                  <span>{b.checkIn ? new Date(b.checkIn).toLocaleDateString() : '-'} → {b.checkOut ? new Date(b.checkOut).toLocaleDateString() : '-'}</span>
+                  <span className="text-ocean/40">{b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  {b.status !== 'confirmed' && (
+                    <button onClick={() => setConfirmAction({ id: b._id, status: 'confirmed', type: 'bookings' })}
+                      className="flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors">
+                      Confirm
+                    </button>
+                  )}
+                  {b.status !== 'cancelled' && (
+                    <button onClick={() => setConfirmAction({ id: b._id, status: 'cancelled', type: 'bookings' })}
+                      className="flex-1 px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -239,15 +286,16 @@ export default function AdminDashboard() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-ocean/5 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto hidden lg:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-ocean text-warmwhite">
                   <th scope="col" className="px-4 py-3 text-left font-medium">{t('contact_name')}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden md:table-cell">{t('contact_email')}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden sm:table-cell">{t('contact_checkin')}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden sm:table-cell">{t('contact_checkout')}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium hidden lg:table-cell">{t('contact_guests')}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t('contact_email')}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Date</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t('contact_checkin')}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t('contact_checkout')}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t('contact_guests')}</th>
                   <th scope="col" className="px-4 py-3 text-left font-medium">{t('admin_inquiries_status')}</th>
                   <th scope="col" className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
@@ -256,10 +304,11 @@ export default function AdminDashboard() {
                 {inquiries.map(inq => (
                   <tr key={inq._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 font-medium text-ocean">{inq.guestName}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden md:table-cell">{inq.email}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden sm:table-cell">{inq.checkIn ? new Date(inq.checkIn).toLocaleDateString() : '-'}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden sm:table-cell">{inq.checkOut ? new Date(inq.checkOut).toLocaleDateString() : '-'}</td>
-                    <td className="px-4 py-3 text-ocean/60 hidden lg:table-cell">{inq.guests || '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{inq.email}</td>
+                    <td className="px-4 py-3 text-ocean/60 text-xs whitespace-nowrap">{inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{inq.checkIn ? new Date(inq.checkIn).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{inq.checkOut ? new Date(inq.checkOut).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-ocean/60">{inq.guests || '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                         inq.status === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-200' :
@@ -278,21 +327,21 @@ export default function AdminDashboard() {
                       <div className="flex gap-1.5 justify-end">
                         {inq.status !== 'confirmed' && (
                           <button onClick={() => setConfirmAction({ id: inq._id, status: 'confirmed', type: 'inquiries' })}
-                            className="px-2.5 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors"
+                            className="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors"
                             aria-label={`Confirm booking for ${inq.guestName}`}>
                             {t('admin_inquiries_confirmed')}
                           </button>
                         )}
                         {inq.status !== 'cancelled' && (
                           <button onClick={() => setConfirmAction({ id: inq._id, status: 'cancelled', type: 'inquiries' })}
-                            className="px-2.5 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors"
+                            className="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors"
                             aria-label={`Cancel booking for ${inq.guestName}`}>
                             {t('admin_inquiries_cancelled')}
                           </button>
                         )}
                         {inq.status !== 'pending' && (
                           <button onClick={() => setConfirmAction({ id: inq._id, status: 'pending', type: 'inquiries' })}
-                            className="px-2.5 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-medium hover:bg-yellow-100 transition-colors"
+                            className="px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-medium hover:bg-yellow-100 transition-colors"
                             aria-label={`Set booking back to pending for ${inq.guestName}`}>
                             {t('admin_inquiries_pending')}
                           </button>
@@ -303,6 +352,55 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="divide-y divide-ocean/5 lg:hidden">
+            {inquiries.map(inq => (
+              <div key={inq._id} className="p-4 space-y-2">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="font-medium text-ocean">{inq.guestName}</span>
+                    <span className="text-ocean/40 text-xs block">{inq.email}</span>
+                  </div>
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${
+                    inq.status === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-200' :
+                    inq.status === 'cancelled' ? 'bg-red-50 text-red-700 ring-1 ring-red-200' :
+                    'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                      inq.status === 'confirmed' ? 'bg-green-500' :
+                      inq.status === 'cancelled' ? 'bg-red-500' :
+                      'bg-yellow-500'
+                    }`} />
+                    {inq.status || 'pending'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ocean/60">
+                  <span>{inq.checkIn ? new Date(inq.checkIn).toLocaleDateString() : '-'} → {inq.checkOut ? new Date(inq.checkOut).toLocaleDateString() : '-'}</span>
+                  <span>Guests: {inq.guests || '-'}</span>
+                  <span className="text-ocean/40">{inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  {inq.status !== 'confirmed' && (
+                    <button onClick={() => setConfirmAction({ id: inq._id, status: 'confirmed', type: 'inquiries' })}
+                      className="flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors">
+                      {t('admin_inquiries_confirmed')}
+                    </button>
+                  )}
+                  {inq.status !== 'cancelled' && (
+                    <button onClick={() => setConfirmAction({ id: inq._id, status: 'cancelled', type: 'inquiries' })}
+                      className="flex-1 px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                      {t('admin_inquiries_cancelled')}
+                    </button>
+                  )}
+                  {inq.status !== 'pending' && (
+                    <button onClick={() => setConfirmAction({ id: inq._id, status: 'pending', type: 'inquiries' })}
+                      className="flex-1 px-3 py-2 bg-yellow-50 text-yellow-700 rounded-lg text-sm font-medium hover:bg-yellow-100 transition-colors">
+                      {t('admin_inquiries_pending')}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

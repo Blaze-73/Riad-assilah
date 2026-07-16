@@ -37,7 +37,7 @@ export default function App() {
        </Routes>
      </main>
       {!isAdmin && <WhatsAppButton />}
-      <Footer />
+      {!isAdmin && <Footer />}
    </div>
   );
 }

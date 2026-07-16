@@ -148,20 +148,32 @@ async function seed() {
     console.log('→ Admin already exists');
   }
 
-  // Rooms
-  await Room.deleteMany({});
-  await Room.insertMany(rooms);
-  console.log(`✓ ${rooms.length} rooms inserted`);
+  // Rooms - skip if already have data (don't wipe existing)
+  const roomCount = await Room.countDocuments();
+  if (roomCount === 0) {
+    await Room.insertMany(rooms);
+    console.log(`✓ ${rooms.length} rooms inserted`);
+  } else {
+    console.log(`→ ${roomCount} rooms already exist, skipping`);
+  }
 
   // Testimonials
-  await Testimonial.deleteMany({});
-  await Testimonial.insertMany(testimonials);
-  console.log(`✓ ${testimonials.length} testimonials inserted`);
+  const testimonialCount = await Testimonial.countDocuments();
+  if (testimonialCount === 0) {
+    await Testimonial.insertMany(testimonials);
+    console.log(`✓ ${testimonials.length} testimonials inserted`);
+  } else {
+    console.log(`→ ${testimonialCount} testimonials already exist, skipping`);
+  }
 
   // Gallery
-  await GalleryImage.deleteMany({});
-  await GalleryImage.insertMany(galleryImages);
-  console.log(`✓ ${galleryImages.length} gallery images inserted`);
+  const galleryCount = await GalleryImage.countDocuments();
+  if (galleryCount === 0) {
+    await GalleryImage.insertMany(galleryImages);
+    console.log(`✓ ${galleryImages.length} gallery images inserted`);
+  } else {
+    console.log(`→ ${galleryCount} gallery images already exist, skipping`);
+  }
 
   await mongoose.disconnect();
   console.log('\n✓ All seed data loaded!');

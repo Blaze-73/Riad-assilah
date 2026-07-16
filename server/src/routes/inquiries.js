@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
 });
 
 // admin list, status update, delete
-router.get('/', verifyJWT, async (req, res) => res.json(await Inquiry.find()));
+router.get('/', verifyJWT, async (req, res) => res.json(await Inquiry.find().sort({ createdAt: -1 })));
 router.patch('/:id', verifyJWT, async (req, res) => {
   const updated = await Inquiry.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
   res.json(updated);
